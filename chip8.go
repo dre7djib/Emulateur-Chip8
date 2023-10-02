@@ -1,23 +1,9 @@
-package chip
+package main
 
 import (
 	"io"
 	"os"
 )
-
-type Chip8 struct {
-	memory     [4096]uint8
-	i          uint16
-	pc         uint16
-	stack      [16]uint16
-	sp         uint16
-	delayTimer byte
-	soundTimer byte
-	keypad     [16]uint8
-	video      [64 * 32]uint32
-	opcode     []uint16
-	register   []uint8
-}
 
 const (
 	START_ADDRESS = 0x200
