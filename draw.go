@@ -36,7 +36,8 @@ func setupKeys() {
 }
 
 var (
-	square *ebiten.Image
+	square    *ebiten.Image
+	backImage *ebiten.Image
 )
 
 func init() {
@@ -54,34 +55,25 @@ func getInput() bool {
 	return false
 }
 
-func update(screen *ebiten.Image) error {
-
-	// fill screen
+func updt(screen *ebiten.Image) error {
 	screen.Fill(color.NRGBA{0x00, 0x00, 0x00, 0xff})
-
 	for i := 0; i < 10; i++ {
-
 		chip8.draw = false
 		chip8.flag = false
-		gotInput := true
+		Input := true
 		chip8.Run()
-
 		if chip8.flag {
-			gotInput = getInput()
-			if !gotInput {
+			Input = getInput()
+			if !Input {
 				chip8.pc = chip8.pc - 2
 			}
 		}
-
-		if chip8.draw || !gotInput {
+		if chip8.draw || !Input {
 			for i := 0; i < 32; i++ {
 				for j := 0; j < 64; j++ {
 					if chip8.video[i][j] == 0x01 {
-
 						opts := &ebiten.DrawImageOptions{}
-
 						opts.GeoM.Translate(float64(j*10), float64(i*10))
-
 						screen.DrawImage(square, opts)
 					}
 				}
@@ -94,13 +86,10 @@ func update(screen *ebiten.Image) error {
 				chip8.keypad[value] = 0x00
 			}
 		}
-
 		if chip8.soundTimer > 0 {
 			audioPlayer.Play()
 			audioPlayer.Rewind()
 		}
-
 	}
-
 	return nil
 }

@@ -1,0 +1,85 @@
+func drawSprite(chip8 *Chip8, x, y, height uint8) bool {
+    collision := false
+    for row := uint8(0); row < height; row++ {
+        spriteByte := chip8.memory[chip8.i+uint16(row)]
+
+        for col := uint8(0); col < 8; col++ {
+            spritePixel := (spriteByte >> (7 - col)) & 0x1
+            screenX := int(x) + int(col)
+            screenY := int(y) + int(row)
+
+            if screenX < 64 && screenY < 32 {
+                // Check if the sprite pixel overlaps with an existing screen pixel
+                existingPixel := chip8.video[screenY][screenX]
+                if spritePixel == 1 && existingPixel == 1 {
+                    collision = true
+                }
+
+                // XOR the sprite pixel onto the screen
+                chip8.video[screenY][screenX] ^= spritePixel
+            } else {
+                // Handle wrap-around if the sprite goes off the screen
+                wrappedX := (screenX + 64) % 64
+                wrappedY := (screenY + 32) % 32
+
+                existingPixel := chip8.video[wrappedY][wrappedX]
+                if spritePixel == 1 && existingPixel == 1 {
+                    collision = true
+                }
+
+                chip8.video[wrappedY][wrappedX] ^= spritePixel
+            }
+        }
+    }
+    return collision
+}
+
+func (chip8 *Chip8) Dxyn(opcode uint16) {
+    x := uint8((opcode >> 8) & 0x0F)
+    y := uint8((opcode >> 4) & 0x0F)
+    height := uint8(opcode & 0x000F)
+
+    // Reset the VF register
+    chip8.v[0xF] = 0
+
+    // Draw the sprite and check for collision
+    collision := drawSprite(chip8, chip8.v[x], chip8.v[y], height)
+
+    // Set VF to 1 if a collision occurred
+    if collision {
+        chip8.v[0xF] = 1
+    }
+
+    chip8.draw = true
+}
+
+
+
+
+
+
+
+
+		registerX := (opcode & 0x0F00) >> 8
+		registerY := (opcode & 0x00F0) >> 4
+		nibble := byte(opcode & 0x000F)
+		x := ch8.v[registerX]
+		y := ch8.v[registerY]
+		ch8.v[0xF] = 0x00
+		for i := y; i < y+nibble; i++ {
+			for j := x; j < x+8; j++ {
+				bit := (ch8.memory[ch8.i+uint16(i-y)] >> (7 - j + x)) & 0x01
+				xIndex, yIndex := j, i
+				if j >= byte(0x40) {
+					xIndex = j - byte(0x40)
+				}
+				if i >= byte(0x20) {
+					yIndex = i - byte(0x20)
+				}
+				if bit == 0x01 && ch8.video[yIndex][xIndex] == 0x01 {
+					ch8.v[0xF] = 0x01
+				}
+				ch8.video[yIndex][xIndex] = ch8.video[yIndex][xIndex] ^ uint32(bit)
+			}
+		}
+		ch8.draw = true

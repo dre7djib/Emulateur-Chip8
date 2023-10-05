@@ -12,9 +12,6 @@ func (ch8 *Chip8) Run() {
 		ch8.delayTimer = ch8.delayTimer - 1
 	}
 
-	if ch8.soundTimer > 0 {
-		ch8.soundTimer = ch8.soundTimer - 1
-	}
 }
 func (ch8 *Chip8) Instruction() {
 	opcode := uint16(ch8.memory[ch8.pc])<<8 | uint16(ch8.memory[ch8.pc+1])
@@ -23,7 +20,7 @@ func (ch8 *Chip8) Instruction() {
 	case 0x0000:
 		switch opcode & 0x000F {
 		case 0x0000:
-			ch8.ClearDisplay()
+			ch8.CLS()
 		case 0x000E:
 			ch8.pc = ch8.stack[ch8.sp-1]
 			ch8.sp = ch8.sp - 1
@@ -214,7 +211,7 @@ func (ch8 *Chip8) Instruction() {
 	}
 }
 
-func (ch8 *Chip8) ClearDisplay() {
+func (ch8 *Chip8) CLS() {
 	for x := 0x00; x < 0x20; x++ {
 		for y := 0x00; y < 0x40; y++ {
 			ch8.video[x][y] = 0x00
