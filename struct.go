@@ -16,7 +16,6 @@ type Chip8 struct {
 	soundTimer byte
 	keypad     [16]byte
 	video      [height][width]uint32
-	opcode     []uint16
 	draw       bool
 	register   byte
 	flag       bool

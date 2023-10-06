@@ -86,10 +86,6 @@ func updt(screen *ebiten.Image) error {
 				chip8.keypad[value] = 0x00
 			}
 		}
-		if chip8.soundTimer > 0 {
-			audioPlayer.Play()
-			audioPlayer.Rewind()
-		}
 	}
 	return nil
 }
