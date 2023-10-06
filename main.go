@@ -1,6 +1,6 @@
 package main
 
-import ( // Assurez-vous d'importer votre package Chip8
+import (
 	"fmt"
 
 	"github.com/hajimehoshi/ebiten"
