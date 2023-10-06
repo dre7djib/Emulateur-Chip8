@@ -4,7 +4,6 @@ import (
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten"
-	"github.com/hajimehoshi/ebiten/audio"
 )
 
 var (
@@ -12,8 +11,6 @@ var (
 )
 
 var keyMap map[ebiten.Key]byte
-
-var audioPlayer *audio.Player
 
 func setupKeys() {
 	keyMap = make(map[ebiten.Key]byte)
@@ -36,8 +33,7 @@ func setupKeys() {
 }
 
 var (
-	square    *ebiten.Image
-	backImage *ebiten.Image
+	square *ebiten.Image
 )
 
 func init() {
